@@ -45,6 +45,7 @@ import time
 import threading
 
 qubes_guid_path = '/usr/bin/qubes_guid'
+qrexec_daemon_path = '/usr/lib/qubes/qrexec_daemon'
 
 class QubesConfigFileWatcher(ProcessEvent):
     def __init__ (self, update_func):
@@ -750,6 +751,10 @@ class VmManagerWindow(QMainWindow):
         retcode = subprocess.call ([qubes_guid_path, "-d", str(xid), "-c", vm.label.color, "-i", vm.label.icon, "-l", str(vm.label.index)])
         if (retcode != 0):
             QMessageBox.warning (None, "Error starting VM!", "ERROR: Cannot start qubes_guid!")
+            return
+        retcode = subprocess.call ([qrexec_daemon_path, str(xid)])
+        if (retcode != 0):
+            QMessageBox.warning (None, "Error starting VM!", "ERROR: Cannot start qrexec_daemon!")
             return
  
     def pause_vm(self):
